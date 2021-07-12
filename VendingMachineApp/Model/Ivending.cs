@@ -10,12 +10,12 @@ namespace VendingMachineApp.Model
         public void ShowAll();
 
         //Purchase
-        public void Purchase();
+        public void Purchase(int idFromUser, int numberOfProduct);
 
         //InsertMoney
         public int InsertMoney(int moneyType,int countOfMoneyType);
 
         //EndTranslation
-        public string EndTransaction();
+        public Dictionary<int, int> EndTransaction(int moneyLeft);
     }
 }

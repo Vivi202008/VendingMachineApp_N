@@ -47,11 +47,14 @@ namespace VendingMachineApp
                         break;
                     case 4:
                         Console.WriteLine("4: Buy any number of products.");
-                        vendingMachine.Purchase();
+                        int idUserChoose = vendingMachine.IdFromUser();
+                        int numberUserInput = vendingMachine.NumberOfProduct();
+                        vendingMachine.Purchase(idUserChoose,numberUserInput);
                         break;
                     case 5:
                         Console.WriteLine("5: Returns money left.");
-                        vendingMachine.EndTransaction();
+                        int moneyLeft = vendingMachine.MoneyPool;
+                        vendingMachine.EndTransaction(moneyLeft);
                         break;
 
                     case 999:

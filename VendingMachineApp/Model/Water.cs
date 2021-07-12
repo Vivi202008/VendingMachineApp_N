@@ -4,7 +4,7 @@ using System.Text;
 
 namespace VendingMachineApp.Model
 {
-    class Water : Product
+   public class Water : Product
     {
         public int Capacity { get; set; }
 
@@ -23,7 +23,7 @@ namespace VendingMachineApp.Model
 
         public override string HowToUse()
         {
-            return $"{Name}'s usage is to open the cap and drink directly";
+            return $"{Name}'s usage is to open the cap and drink directly.";
         }
     }
 }

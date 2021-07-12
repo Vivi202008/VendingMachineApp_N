@@ -16,6 +16,9 @@ namespace VendingMachineApp.Data
         static Product selectedProduct;
 
         Product[] productInVending = AllProduct();
+        //Product[] productInVending;
+
+        public Product[] All { get { return productInVending ; } }
 
         public int[] MoneyType { get { return moneyType; } }
 
@@ -98,7 +101,7 @@ namespace VendingMachineApp.Data
         }
 
         //o Purchase, to buy any mumber of a product.
-        public void Purchase()
+        public void Purchase(int idFromUser,int numberOfProduct)
         {
             //User has no money i moneyPool
             if (moneyPool == 0)
@@ -107,16 +110,7 @@ namespace VendingMachineApp.Data
                 //return;
             }
 
-            //Show info about all products in vengding machine.
-            foreach (Product product in productInVending)
-            {
-                Console.WriteLine($"Id:{product.Id}\tName:{product.Name}\tPrice:{product.Price}\t  Amount:{product.Amount}");
-            }
-
-            //User input Id of product and amount that user will buy thid product.
-            int userInput = GetNumberFromUser("Choose the Id of produkt.  ");
-            idFromUser = GetIdFromUser(userInput);
-
+            selectedProduct = Array.Find(productInVending, Product => Product.Id == idFromUser );
 
             //No product left.
             if (selectedProduct.Amount == 0)
@@ -124,10 +118,6 @@ namespace VendingMachineApp.Data
                 Console.WriteLine("The product is no more left.");
                 return;
             }
-
-
-            numberOfProduct = GetNumberFromUser("Input the count of the produkt.  ");
-
 
             //check if the moneypool is enough to buy product and if the product is enough
 
@@ -144,6 +134,7 @@ namespace VendingMachineApp.Data
 
             }
 
+            //Caclulate money och amountofproduct left
             moneyPool = moneyPool - selectedProduct.Price * numberOfProduct;
             selectedProduct.Amount = selectedProduct.Amount - numberOfProduct;
 
@@ -155,27 +146,46 @@ namespace VendingMachineApp.Data
             if (numberOfProduct > 0)
             {
                 Console.WriteLine(selectedProduct.HowToUse());
-
                 Console.WriteLine(selectedProduct.Info());
             }
 
 
         }
-
-        public int GetIdFromUser(int userInput)
+//User input Id of product and amount that user will buy thid product.
+    public int NumberOfProduct()
         {
-            selectedProduct = Array.Find(productInVending, Product => Product.Id == userInput);
-            while (selectedProduct == null)
+ int numberOfProduct = GetNumberFromUser("Input the count of the produkt.  ");
+            return numberOfProduct;
+        }
+       
+        public int IdFromUser()
+        {  
+            int idFromUser = GetNumberFromUser("Choose the Id of produkt.  ");
+            bool idInputCorrect = IdIputCorrect(idFromUser);
+            while(!idInputCorrect)
             {
-                if (selectedProduct == null)
-                { throw new ArgumentException("Fel! The Id inputed must be of a valid produktId! \n"); }
-                userInput = GetNumberFromUser("Choose the Id of produkt.  ");
-                selectedProduct = Array.Find(productInVending, Product => Product.Id == userInput);
-
-
+                idFromUser = GetNumberFromUser("Choose the Id of produkt.  ");
+                idInputCorrect = IdIputCorrect(idFromUser);
             }
 
-            return userInput;
+            return idFromUser;
+        }
+
+
+
+        public bool IdIputCorrect(int userInput)
+        {
+            bool idInputCorrect=false;
+            selectedProduct = Array.Find(productInVending, Product => Product.Id == userInput);
+            if (selectedProduct == null)
+            {
+                Console.WriteLine("Fel! The Id inputed must be of a valid produktId! \n");
+            }
+            else
+            {
+                idInputCorrect = true;
+            }
+            return idInputCorrect;
         }
 
         //o ShowAll, show all products.
@@ -184,6 +194,11 @@ namespace VendingMachineApp.Data
             foreach (Product product in productInVending)
             {
                 Console.WriteLine(product.Info());
+            }
+            //Show info about all products in vengding machine.
+            foreach (Product product in productInVending)
+            {
+                Console.WriteLine($"Id:{product.Id}\tName:{product.Name}\tPrice:{product.Price}\t  Amount:{product.Amount}");
             }
         }
 
@@ -195,46 +210,43 @@ namespace VendingMachineApp.Data
 
 
         //o EndTransaction, returns money left in appropriate amount of change(Dictionary).
-        public string EndTransaction()
+        public Dictionary<int, int> EndTransaction(int moneyLeft)
         {
-            string outPrintChange="";
-            ShowMoneyLeft();
-            if (moneyPool != 0)
-            {
-
+            string outPrintChange;
             Dictionary<int, int> change = new Dictionary<int, int>();
-
-            outPrintChange = "Please take your change, it is made up of ";
-            int countMoney = 0;
-
-            for (int i = moneyType.Length - 1; i >= 0; i--)
+            if (moneyLeft > 0)
             {
-                countMoney = moneyPool / moneyType[i];
-                change.Add(moneyType[i], countMoney);
-                moneyPool = moneyPool % moneyType[i];
-                if (countMoney > 0)
-                    outPrintChange = outPrintChange + countMoney + " st " + moneyType[i] + "-kr notes ";
+                outPrintChange = "Please take your change, it is made up of ";
+                int countMoney;
+
+                for (int i = moneyType.Length - 1; i >= 0; i--)
+                {
+                    countMoney = moneyLeft / moneyType[i];
+
+                    moneyLeft = moneyLeft % moneyType[i];
+                    if (countMoney > 0)
+                    {
+                        change.Add(moneyType[i], countMoney);
+                        outPrintChange = outPrintChange + countMoney + " st " + moneyType[i] + "-kr notes ";
+                    }
+                }
+                Console.WriteLine(outPrintChange);
             }
-
-            Console.WriteLine(outPrintChange);
-            }
-
-
-            return outPrintChange;
+            return change;
         }
 
 
 
-        static Product[] AllProduct()
+        public static Product[]  AllProduct()
         {
             Coke coke = new Coke(1, "Cocacola", 10, 10, 300, "In can");
             Product productCoke = new Coke(2, "Pepsi", 10, 9, 500, "In bottle");
+            Water water = new Water(3, "Water", 15, 10, 1000, "Mineral");
             Chocolate chocolate = new Chocolate(4, "Lindt", 20, 23, 200, "Roll");
-            Water water = new Water(3, "Cocacola", 15, 10, 1000, "Mineral");
-            Toy toy = new Toy(5, "Boll", 1, 53, 3, "Plast");
+            Toy toy = new Toy(5, "Ball", 1, 53, 3, "Plast");
 
-            Product[] allProduct = new Product[5] { coke, productCoke, chocolate, water, toy };
-            return allProduct;
+            Product[] productsInVending = new Product[5] { coke, productCoke, chocolate, water, toy };
+            return productsInVending;
 
         }
 

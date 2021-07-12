@@ -8,17 +8,17 @@ using System.Collections.Generic;
 
 namespace VendingMachineApp.Tests
 {
-    public class CokeTests
+    public class WaterTests
     {
         [Fact]
-        public void CokeInfoCorrectly()
+        public void WaterInfoCorrectly()
         {
             //Arrange;
             VendingMachine vendingMachine = new VendingMachine();
             Product [] allproducts=vendingMachine.All;
-            Product productBuy=Array.Find(allproducts, Product => Product.Id == 4);
+            Product productBuy=Array.Find(allproducts, Product => Product.Id == 3);
 
-            string expected = $"--------Chocolate-------\nId:4\nName:Lindt\nPrice:23\nAmount:20\nWeight:200 g\nType:Roll\n";
+            string expected = $"--------Water-------\nId:3\nName:Water\nPrice:10\nAmount:15\nCapacity:1000 ml\nType:Mineral\n";
 
             //Act
             string result = productBuy.Info();
@@ -28,14 +28,14 @@ namespace VendingMachineApp.Tests
         }
 
         [Fact]
-        public void CokeWorkCorrectly()
+        public void WaterUseCorrectly()
         {
             //Arrange;
             VendingMachine vendingMachine = new VendingMachine();
             Product[] allproducts = vendingMachine.All;
-            Product productBuy = Array.Find(allproducts, Product => Product.Id == 4);
+            Product productBuy = Array.Find(allproducts, Product => Product.Id == 3);
 
-            string expected = $"Lindt's usage is to eat directly after opening the package";
+            string expected = $"Water's usage is to open the cap and drink directly.";
 
             //Act
             string result = productBuy.HowToUse();

@@ -8,10 +8,10 @@ using System.Collections.Generic;
 
 namespace VendingMachineApp.Tests
 {
-    public class CokeTests
+    public class ChocolateTests
     {
         [Fact]
-        public void CokeInfoCorrectly()
+        public void ChocolateInfoCorrectly()
         {
             //Arrange;
             VendingMachine vendingMachine = new VendingMachine();
@@ -28,7 +28,7 @@ namespace VendingMachineApp.Tests
         }
 
         [Fact]
-        public void CokeWorkCorrectly()
+        public void ChocolateUseeWorkCorrectly()
         {
             //Arrange;
             VendingMachine vendingMachine = new VendingMachine();

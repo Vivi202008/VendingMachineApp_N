@@ -47,7 +47,7 @@ namespace VendingMachineApp.Tests
             result = vendingMachine.MoneyTypeInputIsCorrect(moneyTypeInput);
 
             //Assert
-            Assert.True(result );
+            Assert.True(result);
         }
 
         [Theory]
@@ -60,13 +60,13 @@ namespace VendingMachineApp.Tests
         public void MoneyTypeInputIsWrong(int moneyTypeInput)
         {
             //Arrange
-           
+
             //Act
             ArgumentException result = Assert.Throws<ArgumentException>(() => vendingMachine.MoneyTypeInputIsCorrect(moneyTypeInput));
 
             //Assert
-            Assert.Contains("Fel! The money inserted mustbe of a valid denomination! ( 1, 5, 10, 20, 50, 100, 500, 1000 kr )", result.Message );
-            
+            Assert.Contains("Fel! The money inserted mustbe of a valid denomination! ( 1, 5, 10, 20, 50, 100, 500, 1000 kr )", result.Message);
+
         }
 
         [Fact]
@@ -75,18 +75,18 @@ namespace VendingMachineApp.Tests
             //Arrange
             int moneyType = 50;
             int countOfMoneyType = 3;
-            int expectMoneyPool = moneyType*countOfMoneyType;
+            int expectMoneyPool = moneyType * countOfMoneyType;
 
             //Act
-            int actualMoneyPool=vendingMachine.InsertMoney(moneyType,countOfMoneyType);
+            int actualMoneyPool = vendingMachine.InsertMoney(moneyType, countOfMoneyType);
 
             //Assert
             Assert.Equal(expectMoneyPool, actualMoneyPool);
 
             //Arrange
-             moneyType = 10;
-             countOfMoneyType = 9;
-             expectMoneyPool = moneyType * countOfMoneyType+ expectMoneyPool;
+            moneyType = 10;
+            countOfMoneyType = 9;
+            expectMoneyPool = moneyType * countOfMoneyType + expectMoneyPool;
 
             //Act
             actualMoneyPool = vendingMachine.InsertMoney(moneyType, countOfMoneyType);
@@ -94,15 +94,17 @@ namespace VendingMachineApp.Tests
             //Assert
             Assert.Equal(expectMoneyPool, actualMoneyPool);
         }
-        
+
         [Fact]
         public void NoMoneyToBuy()
         {
             //Arrange
             vendingMachine.MoneyPool = 0;
+            int idUserChoose =3;
+            int numberUserInput = 4;
 
             //Act
-            ArgumentException result = Assert.Throws<ArgumentException>(() => vendingMachine.Purchase());
+            ArgumentException result = Assert.Throws<ArgumentException>(() => vendingMachine.Purchase(idUserChoose, numberUserInput));
 
             //Assert
             Assert.Contains("You have no money in pool. Please insert money first.", result.Message);
@@ -115,10 +117,10 @@ namespace VendingMachineApp.Tests
             vendingMachine.idFromUser = 88;
 
             //Act
-            ArgumentException result = Assert.Throws<ArgumentException>(() => vendingMachine.GetIdFromUser(vendingMachine.idFromUser));
+            bool result =  vendingMachine.IdIputCorrect(vendingMachine.idFromUser);
 
             //Assert
-            Assert.Contains("Fel! The Id inputed must be of a valid produktId!", result.Message);
+            Assert.False ( result);
         }
 
         [Fact]
@@ -133,16 +135,16 @@ namespace VendingMachineApp.Tests
 
             //Product[] allProduct = new Product[5] { coke, productCoke, chocolate, water, toy };
             vendingMachine.MoneyPool = 100;
-            vendingMachine.idFromUser = 3;
-            vendingMachine.numberOfProduct = 3;
+            int idUserChoose = 3;
+            int numberUserInput =4;
+            int expectMoneyPool = 100 -4 * 10;
             
-            int expectMoneyPool = 100 - 3 * 10;
 
             //Act            
-            vendingMachine.Purchase();
+            vendingMachine.Purchase(idUserChoose,numberUserInput );
 
             //Assert
-            //Assert.Equal("Cocacola", vendingMachine.selectedProduct.Name);
+          //  Assert.Equal("Cocacola", vendingMachine.selectedProduct.Name);
             Assert.Equal(expectMoneyPool, vendingMachine.MoneyPool);
         }
 
@@ -152,12 +154,12 @@ namespace VendingMachineApp.Tests
         {
             //Arrange;
             VendingMachine vendingMachine = new VendingMachine();
-            vendingMachine.MoneyPool=725;
-            string expectedChange = "Please take your change, it is made up of 1 st 500-kr notes 2 st 100-kr notes 1 st 20-kr notes 1 st 5-kr notes";
+            vendingMachine.MoneyPool = 725;
+            Dictionary<int, int> expectedChange = new Dictionary<int, int> { { 500, 1 }, { 100, 2 }, { 20, 1 }, { 5, 1 } };
+           
+            //Act
+            Dictionary<int, int> result = vendingMachine.EndTransaction(725);
 
-             //Act
-            vendingMachine.EndTransaction();
-            string result = vendingMachine.EndTransaction();
             //Assert
             Assert.Equal(expectedChange, result);
         }
